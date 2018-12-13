@@ -9,6 +9,12 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "bed_level_apMode", "bed_lev
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "bed_level_wifi", "bed_level_wifi\bed_level_wifi.vcxproj", "{6C5A3C5C-2CF6-4FE7-A393-684709AA1EA9}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "bed_level_ble", "bed_level_ble\bed_level_ble.vcxproj", "{A8688238-ADC9-493A-9025-0C25EF483F17}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "bed_level_alexa", "bed_level_alexa\bed_level_alexa.vcxproj", "{23655F4D-D040-466C-BB08-E86571ACEDB0}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "bed_level_async_server", "bed_level_async_server\bed_level_async_server.vcxproj", "{A9E04EFF-4433-48CF-8318-4044A38C9836}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x86 = Debug|x86
@@ -27,6 +33,18 @@ Global
 		{6C5A3C5C-2CF6-4FE7-A393-684709AA1EA9}.Debug|x86.Build.0 = Debug|Win32
 		{6C5A3C5C-2CF6-4FE7-A393-684709AA1EA9}.Release|x86.ActiveCfg = Release|Win32
 		{6C5A3C5C-2CF6-4FE7-A393-684709AA1EA9}.Release|x86.Build.0 = Release|Win32
+		{A8688238-ADC9-493A-9025-0C25EF483F17}.Debug|x86.ActiveCfg = Debug|Win32
+		{A8688238-ADC9-493A-9025-0C25EF483F17}.Debug|x86.Build.0 = Debug|Win32
+		{A8688238-ADC9-493A-9025-0C25EF483F17}.Release|x86.ActiveCfg = Release|Win32
+		{A8688238-ADC9-493A-9025-0C25EF483F17}.Release|x86.Build.0 = Release|Win32
+		{23655F4D-D040-466C-BB08-E86571ACEDB0}.Debug|x86.ActiveCfg = Debug|Win32
+		{23655F4D-D040-466C-BB08-E86571ACEDB0}.Debug|x86.Build.0 = Debug|Win32
+		{23655F4D-D040-466C-BB08-E86571ACEDB0}.Release|x86.ActiveCfg = Release|Win32
+		{23655F4D-D040-466C-BB08-E86571ACEDB0}.Release|x86.Build.0 = Release|Win32
+		{A9E04EFF-4433-48CF-8318-4044A38C9836}.Debug|x86.ActiveCfg = Debug|Win32
+		{A9E04EFF-4433-48CF-8318-4044A38C9836}.Debug|x86.Build.0 = Debug|Win32
+		{A9E04EFF-4433-48CF-8318-4044A38C9836}.Release|x86.ActiveCfg = Release|Win32
+		{A9E04EFF-4433-48CF-8318-4044A38C9836}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

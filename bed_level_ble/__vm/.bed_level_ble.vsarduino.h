@@ -14,7 +14,6 @@
 #define _VSARDUINO_H_
 #define __ESP32_ESp32__
 #define __ESP32_ESP32__
-#define _VMDEBUG 1
 #define ESP_PLATFORM
 #define HAVE_CONFIG_H
 #define F_CPU 240000000L
@@ -107,6 +106,6 @@ typedef long __PTRDIFF_TYPE__;
 #define interrupts() sei()
 #define noInterrupts() cli()
 
-#include "bed_level_wifi.ino"
+#include "bed_level_ble.ino"
 #endif
 #endif

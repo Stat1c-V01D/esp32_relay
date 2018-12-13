@@ -15,11 +15,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <None Include="bed_level_apMode.ino" />
+    <None Include="bed_level_bootAP.ino" />
   </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="__vm\.bed_level_apMode.vsarduino.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-  </ItemGroup>
+ 
 </Project>

@@ -1,22 +1,18 @@
 /*
- Name:		bed_level.ino
- Created:	06.12.2018 11:03:12
- Author:	KS
+ Name:		bed_level_async_server.ino
+ Created:	13.12.2018 20:46:39
+ Author:	Kai
 */
 
-// Load Wi-Fi library
 #include <WiFi.h>
+#include <FS.h>
+#include <AsyncTCP.h>
+#include <ESPAsyncWebServer.h>
 
-// Replace with your network credentials
 const char* ssid = "FRITZ-WLAN-2";
 const char* password = "01823938742039394944";
 
-// Set web server port number to 80
-WiFiServer server(80);
-
-// Variable to store the HTTP request
-String header;
-String side, part, action;
+String header, side, part, action;
 int eventTime;
 
 #define DEBUG
@@ -32,6 +28,8 @@ int eventTime;
 #define relay06 27
 #define relay07 32
 #define relay08 33
+
+AsyncWebServer server(80);
 
 void disable_all() {
 	digitalWrite(relay01, HIGH);
@@ -70,118 +68,70 @@ void relay_init() {
 }
 
 void setup() {
-	Serial.begin(115200);
-	/* //TODO
-	if (ssid=="" || password =="")
-	{
-		apmode();
-	}
-	*/
 	relay_init();
-	// Wi-Fi Setup
-	// Connect to Wi-Fi network with SSID and password
-	Serial.print("Connecting to ");
-	Serial.println(ssid);
+	Serial.begin(115200);
 	WiFi.begin(ssid, password);
+
 	while (WiFi.status() != WL_CONNECTED) {
-		delay(500);
-		Serial.print(".");
+		delay(1000);
+		Serial.println("Connecting to WiFi..");
 	}
-	// Print local IP address and start web server
 	Serial.println("");
 	Serial.println("WiFi connected.");
-	Serial.println("IP address: ");
+	Serial.print("IP address: ");
 	Serial.println(WiFi.localIP());
+
+	server.on("/booth", HTTP_PATCH, [](AsyncWebServerRequest *request) {
+		request->send(200, "text/plain", "ok");
+		//TODO
+		choose_booth(request->url());
+	});
+
+	server.on("/right", HTTP_PATCH, [](AsyncWebServerRequest *request) {
+		request->send(200, "text/plain", "ok");
+		//TODO
+		choose_right(request->url());
+	});
+
+	server.on("/left", HTTP_PATCH, [](AsyncWebServerRequest *request) {
+		request->send(200, "text/plain", "ok");
+		//TODO
+		choose_left(request->url());
+	});
+
+	server.on("/calibrate", HTTP_PATCH, [](AsyncWebServerRequest *request) {
+		request->send(200, "text/plain", "ok");
+		//TODO
+		calibrate();
+	});
+
 	server.begin();
 }
 
-void loop() {
-	WiFiClient client = server.available();   // Listen for incoming clients
-	if (client) {                             // If a new client connects,
-		client_on_connect(client);
-		delay(500);
-	}
-}
-
-void client_on_connect(WiFiClient client) {
-#ifdef DEBUG
-	Serial.println("New Client.");          // print a message out in the serial port
-#endif // DEBUG
-	String currentLine = "";                // make a String to hold incoming data from the client
-	while (client.connected()) {            // loop while the client's connected
-		if (client.available()) {             // if there's bytes to read from the client,
-			char c = client.read();				// read a byte, then
-#ifdef DETAIL_HTTP
-			Serial.write(c);	// print it out the serial monitor
-#endif // DEBUG                   
-			header += c;
-			if (c == '\n') {                    // if the byte is a newline character
-			  // if the current line is blank, you got two newline characters in a row.
-			  // that's the end of the client HTTP request, so send a response:
-				if (currentLine.length() == 0) {
-					client.println();
-					//toggle GPIOs
-					decode(header);
-					// Break out of the while loop
-					break;
-				}
-				else { // if you got a newline, then clear currentLine
-					currentLine = "";
-				}
-			}
-			else if (c != '\r') {  // if you got anything else but a carriage return character,
-				currentLine += c;      // add it to the end of the currentLine
-			}
-		}
-	}
-	header = "";
-	client.stop();
-}
-void decode(String header) {
-	if (header.indexOf("GET /booth") >= 0)
-	{
-		choose_booth(header);
-	}
-	else if (header.indexOf("GET /right") >= 0)
-	{
-		choose_right(header);
-	}
-	else if (header.indexOf("GET /left") >= 0)
-	{
-		choose_left(header);
-	}
-	else if (header.indexOf("GET /calibrate") >= 0)
-	{
-		calibrate();
-	}
-	else
-	{
-		Serial.println("Malformed HTTP Request");
-	}
-}
+void loop() {}
 
 void choose_booth(String header) {
 	side = "booth";
-	if (header.indexOf("GET /booth/head") >= 0)
+	if (header.indexOf("/booth/head") >= 0)
 	{
 		part = "head";
-		if (header.indexOf("GET /booth/head/stop") >= 0)
+		if (header.indexOf("/booth/head/stop") >= 0)
 		{
 			action = "stop";
 		}
-		else if (header.indexOf("GET /booth/head/up") >= 0)
+		else if (header.indexOf("/booth/head/up") >= 0)
 		{
 			action = "up";
 		}
-		else if (header.indexOf("GET /booth/head/down") >= 0)
+		else if (header.indexOf("/booth/head/down") >= 0)
 		{
 			action = "down";
 		}
-		else if (header.indexOf("GET /booth/head/reset") >= 0)
+		else if (header.indexOf("/booth/head/reset") >= 0)
 		{
 			action = "reset";
 		}
-		else if (header.indexOf("GET /booth/head/timer") >= 0)
+		else if (header.indexOf("/booth/head/timer") >= 0)
 		{
 			//TODO
 		}
@@ -193,23 +143,23 @@ void choose_booth(String header) {
 	else
 	{
 		part = "feet";
-		if (header.indexOf("GET /booth/feet/stop") >= 0)
+		if (header.indexOf("/booth/feet/stop") >= 0)
 		{
 			action = "stop";
 		}
-		else if (header.indexOf("GET /booth/feet/up") >= 0)
+		else if (header.indexOf("/booth/feet/up") >= 0)
 		{
 			action = "up";
 		}
-		else if (header.indexOf("GET /booth/feet/down") >= 0)
+		else if (header.indexOf("/booth/feet/down") >= 0)
 		{
 			action = "down";
 		}
-		else if (header.indexOf("GET /booth/feet/reset") >= 0)
+		else if (header.indexOf("/booth/feet/reset") >= 0)
 		{
 			action = "reset";
 		}
-		else if (header.indexOf("GET /booth/feet/timer") >= 0)
+		else if (header.indexOf("/booth/feet/timer") >= 0)
 		{
 			//TODO
 		}
@@ -221,26 +171,26 @@ void choose_booth(String header) {
 }
 void choose_left(String header) {
 	side = "left";
-	if (header.indexOf("GET /left/head") >= 0)
+	if (header.indexOf("/left/head") >= 0)
 	{
 		part = "head";
-		if (header.indexOf("GET /left/head/stop") >= 0)
+		if (header.indexOf("/left/head/stop") >= 0)
 		{
 			action = "stop";
 		}
-		else if (header.indexOf("GET /left/head/up") >= 0)
+		else if (header.indexOf("/left/head/up") >= 0)
 		{
 			action = "up";
 		}
-		else if (header.indexOf("GET /left/head/down") >= 0)
+		else if (header.indexOf("/left/head/down") >= 0)
 		{
 			action = "down";
 		}
-		else if (header.indexOf("GET /left/head/reset") >= 0)
+		else if (header.indexOf("/left/head/reset") >= 0)
 		{
 			action = "reset";
 		}
-		else if (header.indexOf("GET /left/head/timer") >= 0)
+		else if (header.indexOf("/left/head/timer") >= 0)
 		{
 			//TODO
 		}
@@ -252,23 +202,23 @@ void choose_left(String header) {
 	else
 	{
 		part = "feet";
-		if (header.indexOf("GET /left/feet/stop") >= 0)
+		if (header.indexOf("/left/feet/stop") >= 0)
 		{
 			action = "stop";
 		}
-		else if (header.indexOf("GET /left/feet/up") >= 0)
+		else if (header.indexOf("/left/feet/up") >= 0)
 		{
 			action = "up";
 		}
-		else if (header.indexOf("GET /left/feet/down") >= 0)
+		else if (header.indexOf("/left/feet/down") >= 0)
 		{
 			action = "down";
 		}
-		else if (header.indexOf("GET /left/feet/reset") >= 0)
+		else if (header.indexOf("/left/feet/reset") >= 0)
 		{
 			action = "reset";
 		}
-		else if (header.indexOf("GET /left/feet/timer") >= 0)
+		else if (header.indexOf("/left/feet/timer") >= 0)
 		{
 			//TODO
 		}
@@ -281,26 +231,26 @@ void choose_left(String header) {
 }
 void choose_right(String header) {
 	side = "right";
-	if (header.indexOf("GET /right/head") >= 0)
+	if (header.indexOf("/right/head") >= 0)
 	{
 		part = "head";
-		if (header.indexOf("GET /right/head/stop") >= 0)
+		if (header.indexOf("/right/head/stop") >= 0)
 		{
 			action = "stop";
 		}
-		else if (header.indexOf("GET /right/head/up") >= 0)
+		else if (header.indexOf("/right/head/up") >= 0)
 		{
 			action = "up";
 		}
-		else if (header.indexOf("GET /right/head/down") >= 0)
+		else if (header.indexOf("/right/head/down") >= 0)
 		{
 			action = "down";
 		}
-		else if (header.indexOf("GET /right/head/reset") >= 0)
+		else if (header.indexOf("/right/head/reset") >= 0)
 		{
 			action = "reset";
 		}
-		else if (header.indexOf("GET /right/head/timer") >= 0)
+		else if (header.indexOf("/right/head/timer") >= 0)
 		{
 			//TODO
 		}
@@ -312,23 +262,23 @@ void choose_right(String header) {
 	else
 	{
 		part = "feet";
-		if (header.indexOf("GET /right/feet/stop") >= 0)
+		if (header.indexOf("/right/feet/stop") >= 0)
 		{
 			action = "stop";
 		}
-		else if (header.indexOf("GET /right/feet/up") >= 0)
+		else if (header.indexOf("/right/feet/up") >= 0)
 		{
 			action = "up";
 		}
-		else if (header.indexOf("GET /right/feet/down") >= 0)
+		else if (header.indexOf("/right/feet/down") >= 0)
 		{
 			action = "down";
 		}
-		else if (header.indexOf("GET /right/feet/reset") >= 0)
+		else if (header.indexOf("/right/feet/reset") >= 0)
 		{
 			action = "reset";
 		}
-		else if (header.indexOf("GET /right/feet/timer") >= 0)
+		else if (header.indexOf("/right/feet/timer") >= 0)
 		{
 			//TODO
 		}
@@ -337,12 +287,6 @@ void choose_right(String header) {
 #endif // DEBUG
 		gpio_act(side, part, action);
 	}
-}
-
-void calibrate() {
-	enable_all();
-	delay(5000);
-	disable_all();
 }
 
 void gpio_act(String side, String part, String action) {
@@ -357,30 +301,30 @@ void gpio_act(String side, String part, String action) {
 	Serial.println(action);
 #endif // DEBUG
 
-	if (action=="stop")
+	if (action == "stop")
 	{
-		stop(side,part);
+		stop(side, part);
 	}
-	if (part=="head")
+	if (part == "head")
 	{
-		if (action=="up")
+		if (action == "up")
 		{
 			head_up(side);
 		}
-		else if (action=="down")
+		else if (action == "down")
 		{
 			head_down(side);
 		}
-		else if (action=="reset")
+		else if (action == "reset")
 		{
-			head_reset(side,part);
+			head_reset(side, part);
 		}
 		else
 		{
 			//TODO
 		}
 	}
-	if (part =="feet")
+	if (part == "feet")
 	{
 		if (action == "up")
 		{
@@ -390,27 +334,27 @@ void gpio_act(String side, String part, String action) {
 		{
 			feet_down(side);
 		}
-		else if (action=="reset")
+		else if (action == "reset")
 		{
-			feet_reset(side,part);
+			feet_reset(side, part);
 		}
 		else
 		{
 			//TODO
 		}
-		
+
 	}
 }
 
 void head_up(String side) {
-	if (side=="booth")
+	if (side == "booth")
 	{
 		digitalWrite(relay02, HIGH);
 		digitalWrite(relay06, HIGH);
 		digitalWrite(relay01, LOW);
 		digitalWrite(relay05, LOW);
 	}
-	else if (side=="right")
+	else if (side == "right")
 	{
 		digitalWrite(relay02, HIGH);
 		digitalWrite(relay01, LOW);
@@ -443,7 +387,7 @@ void head_down(String side) {
 void head_reset(String side, String part) {
 	head_down(side);
 	delay(5000);
-	stop(side,part);
+	stop(side, part);
 }
 void feet_up(String side) {
 	if (side == "booth")
@@ -483,15 +427,15 @@ void feet_down(String side) {
 		digitalWrite(relay08, LOW);
 	}
 }
-void feet_reset(String side,String part) {
+void feet_reset(String side, String part) {
 	feet_down(side);
 	delay(5000);
 	stop(side, part);
 }
-void stop(String side,String part) {
+void stop(String side, String part) {
 	if (side == "booth")
 	{
-		if (part=="head")
+		if (part == "head")
 		{
 			digitalWrite(relay01, HIGH);
 			digitalWrite(relay02, HIGH);
@@ -508,7 +452,7 @@ void stop(String side,String part) {
 	}
 	else if (side == "right")
 	{
-		if (part=="head")
+		if (part == "head")
 		{
 			digitalWrite(relay01, HIGH);
 			digitalWrite(relay02, HIGH);
@@ -519,7 +463,7 @@ void stop(String side,String part) {
 			digitalWrite(relay04, HIGH);
 		}
 	}
-	else if (side=="left")
+	else if (side == "left")
 	{
 		if (part == "head")
 		{
@@ -538,21 +482,12 @@ void stop(String side,String part) {
 	}
 }
 
-void timerEvent(String side, String part, int time) {
-
+void calibrate() {
+	enable_all();
+	delay(5000);
+	disable_all();
 }
 
-void apmode() {
-#ifdef DEBUG
-	Serial.print("Setting AP (Access Point)…");
-#endif // DEBUG
-	// Remove the password parameter, if you want the AP (Access Point) to be open
-	WiFi.softAP("ESP32-AP", "123456789");
-	IPAddress IP = WiFi.softAPIP();
-#ifdef DEBUG
-	Serial.print("AP IP address: ");
-	Serial.println(IP);
-#endif // DEBUG
-		//TODO
+void timerEvent(String side, String part, int time) {
 
 }
