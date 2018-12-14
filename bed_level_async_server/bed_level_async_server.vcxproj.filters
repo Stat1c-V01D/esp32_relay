@@ -21,5 +21,11 @@
     <ClInclude Include="__vm\.bed_level_async_server.vsarduino.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="digitalIO.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="decodeHTML.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
