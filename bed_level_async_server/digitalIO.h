@@ -1,5 +1,6 @@
 #pragma once
-#define DEBUG
+#include "config.h"
+
 // Assign output variables to GPIO pins
 #define relay01 16
 #define relay02 17
@@ -60,12 +61,12 @@ void relay_init() {
 void gpio_act(String side, String part, String action) {
 
 #ifdef DEBUG
-	Serial.println("Settings:");
-	Serial.print("-->side:");
+	Serial.println("[GPIO] Settings:");
+	Serial.print("[GPIO] -->side:");
 	Serial.println(side);
-	Serial.print("-->part:");
+	Serial.print("[GPIO] -->part:");
 	Serial.println(part);
-	Serial.print("-->action:");
+	Serial.print("[GPIO] -->action:");
 	Serial.println(action);
 #endif // DEBUG
 
@@ -252,14 +253,14 @@ void stop(String side, String part) {
 
 
 void calibrate() {
-	enable_all();
-	delay(5000);
-	disable_all();
+	head_reset("booth", "head");
+	feet_reset("booth", "feet");
 }
 
 void timerEvent(String side, String part, int time) {
-	Serial.println("TimerEvent");
-	Serial.print("Time: ");
+	calibrate();
+	Serial.println("[PRESET] TimerEvent");
+	Serial.print("[PRESET] Time: ");
 	Serial.println(time);
 	gpio_act(side, part, "up");
 	delay(time);

@@ -1,5 +1,7 @@
 #pragma once
-#define DEBUG
+#include "config.h"
+#include "defines.h"
+
 // Assign output variables to GPIO pins
 #define relay01 16
 #define relay02 17
@@ -11,7 +13,7 @@
 #define relay07 32
 #define relay08 33
 
-String side, part, action;
+String side, part, action, event1 = "", event2 = "";
 void timerEvent(String side, String part, int time);
 void stop(String side, String part);
 void head_up(String side);
@@ -22,6 +24,7 @@ void head_reset(String side, String part);
 void feet_reset(String side, String part);
 
 void disable_all() {
+	Serial.println("[COMMON] Relay disable all");
 	digitalWrite(relay01, HIGH);
 	digitalWrite(relay02, HIGH);
 	digitalWrite(relay03, HIGH);
@@ -33,6 +36,7 @@ void disable_all() {
 }
 
 void enable_all() {
+	Serial.println("[COMMON] Relay enable all");
 	digitalWrite(relay01, LOW);
 	digitalWrite(relay02, LOW);
 	digitalWrite(relay03, LOW);
@@ -44,6 +48,7 @@ void enable_all() {
 }
 
 void relay_init() {
+	Serial.println("[INIT] Relay Initialization");
 	// Initialize the output variables as outputs
 	pinMode(relay01, OUTPUT);
 	pinMode(relay02, OUTPUT);
@@ -60,18 +65,20 @@ void relay_init() {
 void gpio_act(String side, String part, String action) {
 
 #ifdef DEBUG
-	Serial.println("Settings:");
-	Serial.print("-->side:");
+	Serial.println("[GPIO] Settings:");
+	Serial.print("[GPIO] -->side:");
 	Serial.println(side);
-	Serial.print("-->part:");
+	Serial.print("[GPIO] -->part:");
 	Serial.println(part);
-	Serial.print("-->action:");
+	Serial.print("[GPIO] -->action:");
 	Serial.println(action);
 #endif // DEBUG
 
 	if (action == "stop")
 	{
 		stop(side, part);
+		side = "";
+		part = "";
 	}
 	if (part == "head")
 	{
@@ -91,6 +98,8 @@ void gpio_act(String side, String part, String action) {
 		{
 			//TODO
 		}
+		side = "";
+		part = "";
 	}
 	if (part == "feet")
 	{
@@ -110,10 +119,13 @@ void gpio_act(String side, String part, String action) {
 		{
 			//TODO
 		}
-
+		side = "";
+		part = "";
 	}
 }
 void head_up(String side) {
+	Serial.print("[GPIO] HEAD UP on side: ");
+	Serial.println(side);
 	if (side == "booth")
 	{
 		digitalWrite(relay02, HIGH);
@@ -133,6 +145,8 @@ void head_up(String side) {
 	}
 }
 void head_down(String side) {
+	Serial.print("[GPIO] HEAD DOWN on side: ");
+	Serial.println(side);
 	if (side == "booth")
 	{
 		digitalWrite(relay01, HIGH);
@@ -152,11 +166,17 @@ void head_down(String side) {
 	}
 }
 void head_reset(String side, String part) {
+	Serial.print("[GPIO] Resetting HEAD on side: ");
+	Serial.print(side);
+	Serial.print(" with part: ");
+	Serial.println(part);
 	head_down(side);
 	delay(5000);
 	stop(side, part);
 }
 void feet_up(String side) {
+	Serial.print("[GPIO] FEET UP on side: ");
+	Serial.println(side);
 	if (side == "booth")
 	{
 		digitalWrite(relay04, HIGH);
@@ -176,6 +196,8 @@ void feet_up(String side) {
 	}
 }
 void feet_down(String side) {
+	Serial.print("[GPIO] FEET DOWN on side: ");
+	Serial.println(side);
 	if (side == "booth")
 	{
 		digitalWrite(relay03, HIGH);
@@ -195,12 +217,21 @@ void feet_down(String side) {
 	}
 }
 void feet_reset(String side, String part) {
+	Serial.print("[GPIO] Resetting FEET on side: ");
+	Serial.print(side);
+	Serial.print(" with part: ");
+	Serial.println(part);
 	feet_down(side);
 	delay(5000);
 	stop(side, part);
 }
 
 void stop(String side, String part) {
+	Serial.print("[GPIO] Stopping on side: ");
+	Serial.print(side);
+	Serial.print(" with part: ");
+	Serial.println(part);
+
 	if (side == "booth")
 	{
 		if (part == "head")
@@ -252,14 +283,22 @@ void stop(String side, String part) {
 
 
 void calibrate() {
-	enable_all();
-	delay(5000);
-	disable_all();
+	Serial.println("[GPIO] Calibrating...");
+	head_reset("booth", "head");
+	feet_reset("booth", "feet");
 }
 
 void timerEvent(String side, String part, int time) {
-	Serial.println("TimerEvent");
-	Serial.print("Time: ");
+	if (part=="head")
+	{
+		head_reset("booth", "head");
+	}
+	else if (part=="feet")
+	{
+		feet_reset("booth", "feet");
+	}
+	Serial.println("[PRESET] TimerEvent");
+	Serial.print("[PRESET] Time: ");
 	Serial.println(time);
 	gpio_act(side, part, "up");
 	delay(time);

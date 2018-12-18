@@ -71,12 +71,6 @@ void relay_init() {
 
 void setup() {
 	Serial.begin(115200);
-	/* //TODO
-	if (ssid=="" || password =="")
-	{
-		apmode();
-	}
-	*/
 	relay_init();
 	// Wi-Fi Setup
 	// Connect to Wi-Fi network with SSID and password

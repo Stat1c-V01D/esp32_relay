@@ -1,10 +1,10 @@
 #pragma once
 #include <string>
 #include "digitalIO.h"
-
-#define DEBUG
+#include "defines.h"
 
 int eventTime;
+bool handshake_complete = false;
 
 void choose_booth(String header) {
 	side = "booth";
@@ -33,9 +33,10 @@ void choose_booth(String header) {
 			header.replace("/booth/head/time/", "");
 			eventTime = header.toInt();
 			timerEvent(side, part, eventTime);
+			return;
 		}
 #ifdef DEBUG
-		Serial.println("Acting now!");
+		Serial.println("[DECODE] Acting now!");
 #endif // DEBUG
 		gpio_act(side, part, action);
 	}
@@ -60,10 +61,14 @@ void choose_booth(String header) {
 		}
 		else if (header.indexOf("/booth/feet/time") >= 0)
 		{
-			//TODO
+			//TODO			
+			header.replace("/booth/feet/time/", "");
+			eventTime = header.toInt();
+			timerEvent(side, part, eventTime);
+			return;
 		}
 #ifdef DEBUG
-		Serial.println("Acting now!");
+		Serial.println("[DECODE] Acting now!");
 #endif // DEBUG
 		gpio_act(side, part, action);
 	}
@@ -92,9 +97,13 @@ void choose_left(String header) {
 		else if (header.indexOf("/left/head/time") >= 0)
 		{
 			//TODO
+			header.replace("/left/head/time/", "");
+			eventTime = header.toInt();
+			timerEvent(side, part, eventTime);
+			return;
 		}
 #ifdef DEBUG
-		Serial.println("Acting now!");
+		Serial.println("[DECODE] Acting now!");
 #endif // DEBUG
 		gpio_act(side, part, action);
 	}
@@ -120,9 +129,13 @@ void choose_left(String header) {
 		else if (header.indexOf("/left/feet/time") >= 0)
 		{
 			//TODO
+			header.replace("/left/feet/time/", "");
+			eventTime = header.toInt();
+			timerEvent(side, part, eventTime);
+			return;
 		}
 #ifdef DEBUG
-		Serial.println("Acting now!");
+		Serial.println("[DECODE] Acting now!");
 #endif // DEBUG
 
 		gpio_act(side, part, action);
@@ -152,9 +165,13 @@ void choose_right(String header) {
 		else if (header.indexOf("/right/head/time") >= 0)
 		{
 			//TODO
+			header.replace("/right/head/time/", "");
+			eventTime = header.toInt();
+			timerEvent(side, part, eventTime);
+			return;
 		}
 #ifdef DEBUG
-		Serial.println("Acting now!");
+		Serial.println("[DECODE] Acting now!");
 #endif // DEBUG
 		gpio_act(side, part, action);
 	}
@@ -180,10 +197,68 @@ void choose_right(String header) {
 		else if (header.indexOf("/right/feet/time") >= 0)
 		{
 			//TODO
+			header.replace("/right/feet/time/", "");
+			eventTime = header.toInt();
+			timerEvent(side, part, eventTime);
+			return;
 		}
 #ifdef DEBUG
-		Serial.println("Acting now!");
+		Serial.println("[DECODE] Acting now!");
 #endif // DEBUG
 		gpio_act(side, part, action);
 	}
+}
+
+void collect_event(String header) {
+	header.replace("/preset", "");
+	if (event1=="")
+	{
+		Serial.print("[EVENT] Setting EVENT1 to: ");
+		Serial.println(header);
+		event1 = header;
+		return;
+	}
+	else
+	{
+		Serial.print("[EVENT] Setting EVENT2 to: ");
+		Serial.println(header);
+		event2 = header;
+	}
+	handshake_complete = true;
+	return;
+}
+
+void process_event(String event1, String event2) {
+	if (event1.indexOf("/booth") >= 0)
+	{
+		Serial.println("[EVENT] Processing EVENT1 to BOOTH");
+		choose_booth(event1);
+	}
+	else if (event1.indexOf("/left") >= 0)
+	{
+		Serial.println("[EVENT] Processing EVENT1 to LEFT");
+		choose_left(event1);
+	}
+	else if (event1.indexOf("/right") >= 0)
+	{
+		Serial.println("[EVENT] Processing EVENT1 to RIGHT");
+		choose_right(event1);
+	}
+	if (event2.indexOf("/booth") >= 0)
+	{
+		Serial.println("[EVENT] Processing EVENT1 to BOOTH");
+		choose_booth(event2);
+	}
+	else if (event2.indexOf("/left") >= 0)
+	{
+		Serial.println("[EVENT] Processing EVENT2 to LEFT");
+		choose_left(event2);
+	}
+	else if (event2.indexOf("/right") >= 0)
+	{
+		Serial.println("[EVENT] Processing EVENT2 to RIGHT");
+		choose_right(event2);
+	}
+	event1 = "";
+	event2 = "";
 }

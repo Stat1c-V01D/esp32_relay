@@ -1,35 +1,26 @@
-/*
- Name:		bed_level_alexa.ino
- Created:	13.12.2018 12:16:53
- Author:	Kai
-*/
-
 #include <Arduino.h>
+#ifdef ESP32
 #include <WiFi.h>
-#define RF_RECEIVER 13
-#define RELAY_PIN_1 12
-#define RELAY_PIN_2 14
+#else
+#include <ESP8266WiFi.h>
+#endif
 #include "fauxmoESP.h"
+//#include "credentials.h"
 
-
-#define SERIAL_BAUDRATE 115200
-
-#define WIFI_SSID "REPLACE_WITH_YOUR_SSID"
-#define WIFI_PASS "REPLACE_WITH_YOUR_PASSWORD"
-
-#define LAMP_1 "lamp one"
-#define LAMP_2 "lamp two"
+#define SERIAL_BAUDRATE                 115200
+#define LED                             2
 
 fauxmoESP fauxmo;
+// -----------------------------------------------------------------------------
+// Wifi
+// -----------------------------------------------------------------------------
 
-// Wi-Fi Connection
 void wifiSetup() {
+
 	// Set WIFI module to STA mode
 	WiFi.mode(WIFI_STA);
 
 	// Connect
-	Serial.printf("[WIFI] Connecting to %s ", WIFI_SSID);
-	WiFi.begin(WIFI_SSID, WIFI_PASS);
 
 	// Wait
 	while (WiFi.status() != WL_CONNECTED) {
@@ -40,66 +31,58 @@ void wifiSetup() {
 
 	// Connected!
 	Serial.printf("[WIFI] STATION Mode, SSID: %s, IP address: %s\n", WiFi.SSID().c_str(), WiFi.localIP().toString().c_str());
+
 }
 
 void setup() {
+
 	// Init serial port and clean garbage
 	Serial.begin(SERIAL_BAUDRATE);
 	Serial.println();
+	Serial.println();
 
-	// Wi-Fi connection
+	// Wifi
 	wifiSetup();
 
 	// LED
-	pinMode(RELAY_PIN_1, OUTPUT);
-	digitalWrite(RELAY_PIN_1, HIGH);
+	pinMode(LED, OUTPUT);
+	digitalWrite(LED, HIGH);
 
-	pinMode(RELAY_PIN_2, OUTPUT);
-	digitalWrite(RELAY_PIN_2, HIGH);
-
+	// You have to call enable(true) once you have a WiFi connection
 	// You can enable or disable the library at any moment
 	// Disabling it will prevent the devices from being discovered and switched
 	fauxmo.enable(true);
+	fauxmo.enable(false);
+	fauxmo.enable(true);
+
+	// You can use different ways to invoke alexa to modify the devices state:
+	// "Alexa, turn light one on" ("light one" is the name of the first device below)
+	// "Alexa, turn on light one"
+	// "Alexa, set light one to fifty" (50 means 50% of brightness)
 
 	// Add virtual devices
-	fauxmo.addDevice(LAMP_1);
-	fauxmo.addDevice(LAMP_2);
+	fauxmo.addDevice("light 1");
+	fauxmo.addDevice("light 2");
+
+	// You can add more devices
+	//fauxmo.addDevice("light 3");
+	//fauxmo.addDevice("light 4");
+	//fauxmo.addDevice("light 5");
+	//fauxmo.addDevice("light 6");
+	//fauxmo.addDevice("light 7");
+	//fauxmo.addDevice("light 8");
 
 	// fauxmoESP 2.0.0 has changed the callback signature to add the device_id,
 	// this way it's easier to match devices to action without having to compare strings.
-	fauxmo.onSetState([](unsigned char device_id, const char * device_name, bool state) {
-		Serial.printf("[MAIN] Device #%d (%s) state: %s\n", device_id, device_name, state ? "ON" : "OFF");
-		if ((strcmp(device_name, LAMP_1) == 0)) {
-			// this just sets a variable that the main loop() does something about
-			Serial.println("RELAY 1 switched by Alexa");
-			//digitalWrite(RELAY_PIN_1, !digitalRead(RELAY_PIN_1));
-			if (state) {
-				digitalWrite(RELAY_PIN_1, LOW);
-			}
-			else {
-				digitalWrite(RELAY_PIN_1, HIGH);
-			}
-		}
-		if ((strcmp(device_name, LAMP_2) == 0)) {
-			// this just sets a variable that the main loop() does something about
-			Serial.println("RELAY 2 switched by Alexa");
-			if (state) {
-				digitalWrite(RELAY_PIN_2, LOW);
-			}
-			else {
-				digitalWrite(RELAY_PIN_2, HIGH);
-			}
-		}
+	fauxmo.onSetState([](unsigned char device_id, const char * device_name, bool state, unsigned char value) {
+		Serial.printf("[MAIN] Device #%d (%s) state: %s value: %d\n", device_id, device_name, state ? "ON" : "OFF", value);
+		digitalWrite(LED, !state);
 	});
 
-	// Callback to retrieve current state (for GetBinaryState queries)
-	/*fauxmo.onGetState([](unsigned char device_id, const char * device_name) {
-		//return !digitalRead(RELAY_PIN_1);
-		return
-	});*/
 }
 
 void loop() {
+
 	// Since fauxmoESP 2.0 the library uses the "compatibility" mode by
 	// default, this means that it uses WiFiUdp class instead of AsyncUDP.
 	// The later requires the Arduino Core for ESP8266 staging version
@@ -108,10 +91,10 @@ void loop() {
 	// packets
 	fauxmo.handle();
 
-	/*static unsigned long last = millis();
+	static unsigned long last = millis();
 	if (millis() - last > 5000) {
-	  last = millis();
-	  Serial.printf("[MAIN] Free heap: %d bytes\n", ESP.getFreeHeap());
-	}*/
-}
+		last = millis();
+		Serial.printf("[MAIN] Free heap: %d bytes\n", ESP.getFreeHeap());
+	}
 
+}

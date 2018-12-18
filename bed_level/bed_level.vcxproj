@@ -112,11 +112,17 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\bed_level_async_server\decodeHTML.h" />
-    <ClInclude Include="..\bed_level_async_server\digitalIO.h" />
+    <ClInclude Include="decodeHTTP.h" />
+    <ClInclude Include="digitalIO.h" />
+    <ClInclude Include="defines.h" />
     <ClInclude Include="__vm\.bed_level.vsarduino.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
+  <ProjectExtensions>
+    <VisualStudio>
+      <UserProperties VM_ADDITIONAL_COMPILER_CPP_FLAGS="" VM_ADDITIONAL_COMPILER_C_FLAGS="" />
+    </VisualStudio>
+  </ProjectExtensions>
 </Project>
