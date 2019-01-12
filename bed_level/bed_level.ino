@@ -47,6 +47,11 @@ void loop() {
 		Serial.printf("[MAIN] Free heap: %d bytes\n", ESP.getFreeHeap());
 	}
 #endif // DEBUG
+	if (handshake_complete == true)
+	{
+		process_event(event1, event2);
+		handshake_complete = false;
+	}
 }
 
 void connect_wifi() {
@@ -80,53 +85,66 @@ void enable_ap() {
 #ifdef DEBUG
 	Serial.printf("[WIFI] ACCESS POINT Mode, SSID: %s, IP address: %s\n", WiFi.SSID().c_str(), WiFi.softAPIP().toString().c_str());
 #endif // DEBUG
-	//TODO
+	//TODO create Webpage to configure ESP
 }
 
 void server_setup() {
 	server.on("/booth", HTTP_ANY, [](AsyncWebServerRequest *request) {
-		//TODO
 		Serial.println("[HTTP] GET request on BOOTH!");
 		choose_booth(request->url());
 		Serial.println("[HTTP] SEND response on BOOTH!");
 		request->send(200, "text/plain", "ok");
 	});
 	server.on("/right", HTTP_ANY, [](AsyncWebServerRequest *request) {
-		//TODO
 		Serial.println("[HTTP] GET request on RIGHT!");
 		choose_right(request->url());
 		Serial.println("[HTTP] SEND response on RIGHT!");
 		request->send(200, "text/plain", "ok");
 	});
 	server.on("/left", HTTP_ANY, [](AsyncWebServerRequest *request) {
-		//TODO
 		Serial.println("[HTTP] GET request on LEFT!");
 		choose_left(request->url());
 		Serial.println("[HTTP] SEND response on LEFT!");
 		request->send(200, "text/plain", "ok");
 	});
 	server.on("/calibrate", HTTP_ANY, [](AsyncWebServerRequest *request) {
-		//TODO
 		Serial.println("[HTTP] GET request on CALIBRATE!");
 		calibrate();
 		Serial.println("[HTTP] SEND response on CALIBRATE!");
 		request->send(200, "text/plain", "ok");
 	});
 	server.on("/preset", HTTP_ANY, [](AsyncWebServerRequest *request) {
-		//TODO
 		Serial.println("[HTTP] GET request on PRESET!");
 		collect_event(request->url());
 		Serial.println("[HTTP] SEND response on PRESET!");
 		request->send(200, "text/plain", "ok");
+	});
+	server.on("/stop", HTTP_ANY, [](AsyncWebServerRequest *request) {
+		//TODO alter STOP function to reset all ongoing actions (especially Timer Events)
+		Serial.println("[HTTP] GET request on STOP!");
+		stop();
+		Serial.println("[HTTP] SEND response on STOP!");
+		request->send(200, "text/plain", "ok");
+	});
+	server.on("/alarm", HTTP_ANY, [](AsyncWebServerRequest *request) {
+		Serial.println("[HTTP] GET request on ALARM!");
+		collect_event(request->url());
+		Serial.println("[HTTP] SEND response on ALARM!");
+		request->send(200, "text/plain", "ok");
+		//TODO form proper Funtion for handling wakeup sequence (reference HANGUP TODO)
+		/*
 		if (handshake_complete==true)
 		{
-			process_event(event1,event2);
+			wake_routine(event1, event2);
+			handshake_complete = false;
 		}
+		*/
 	});
 	server.begin();
 }
 
 void fauxmo_setup() {
+	//TODO create setup for Fauxmo Device(s)
 #define HEAD_UP "Bett Kopf hoch"
 #define HEAD_DOWN "Bett Kopf runter"
 #define FEET_UP "Bett Fuss hoch"
@@ -145,26 +163,26 @@ void fauxmo_act(unsigned char device_id, const char * device_name, bool state, u
 	if ((strcmp(device_name, HEAD_UP) == 0)) {
 		// this just sets a variable that the main loop() does something about
 		Serial.println("[FAUXMO] HEAD UP switched by Alexa");
-		//TODO
+		//TODO action to be done when executed in all following Lamdas
 	}
 	if ((strcmp(device_name, HEAD_DOWN) == 0)) {
 		// this just sets a variable that the main loop() does something about
 		Serial.println("[FAUXMO] HEAD DOWN switched by Alexa");
-		//TODO
+
 	}
 	if ((strcmp(device_name, FEET_UP) == 0)) {
 		// this just sets a variable that the main loop() does something about
 		Serial.println("[FAUXMO] FEET UP switched by Alexa");
-		//TODO
+
 	}
 	if ((strcmp(device_name, FEET_DOWN) == 0)) {
 		// this just sets a variable that the main loop() does something about
 		Serial.println("[FAUXMO] FEET DOWN switched by Alexa");
-		//TODO
+
 	}
 	if ((strcmp(device_name, CALIBRATE) == 0)) {
 		// this just sets a variable that the main loop() does something about
 		Serial.println("[FAUXMO] CALIBRATE switched by Alexa");
-		//TODO
+
 	}
 }

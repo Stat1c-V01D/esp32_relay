@@ -96,7 +96,12 @@ void gpio_act(String side, String part, String action) {
 		}
 		else
 		{
-			//TODO
+			Serial.println("[GPIO] Malformed Statement! Something is wrong:");
+			Serial.print("side = ");
+			Serial.println(side);
+			Serial.print("part = ");
+			Serial.println(part);
+			return;
 		}
 		side = "";
 		part = "";
@@ -117,7 +122,12 @@ void gpio_act(String side, String part, String action) {
 		}
 		else
 		{
-			//TODO
+			Serial.println("[GPIO] Malformed Statement! Something is wrong:");
+			Serial.print("side = ");
+			Serial.println(side);
+			Serial.print("part = ");
+			Serial.println(part);
+			return;
 		}
 		side = "";
 		part = "";
@@ -132,16 +142,19 @@ void head_up(String side) {
 		digitalWrite(relay06, HIGH);
 		digitalWrite(relay01, LOW);
 		digitalWrite(relay05, LOW);
+		return;
 	}
 	else if (side == "right")
 	{
 		digitalWrite(relay02, HIGH);
 		digitalWrite(relay01, LOW);
+		return;
 	}
 	else
 	{
 		digitalWrite(relay06, HIGH);
 		digitalWrite(relay05, LOW);
+		return;
 	}
 }
 void head_down(String side) {
@@ -153,16 +166,19 @@ void head_down(String side) {
 		digitalWrite(relay05, HIGH);
 		digitalWrite(relay02, LOW);
 		digitalWrite(relay06, LOW);
+		return;
 	}
 	else if (side == "right")
 	{
 		digitalWrite(relay01, HIGH);
 		digitalWrite(relay02, LOW);
+		return;
 	}
 	else
 	{
 		digitalWrite(relay05, HIGH);
 		digitalWrite(relay06, LOW);
+		return;
 	}
 }
 void head_reset(String side, String part) {
@@ -183,16 +199,19 @@ void feet_up(String side) {
 		digitalWrite(relay08, HIGH);
 		digitalWrite(relay03, LOW);
 		digitalWrite(relay07, LOW);
+		return;
 	}
 	else if (side == "right")
 	{
 		digitalWrite(relay04, HIGH);
 		digitalWrite(relay03, LOW);
+		return;
 	}
 	else
 	{
 		digitalWrite(relay08, HIGH);
 		digitalWrite(relay07, LOW);
+		return;
 	}
 }
 void feet_down(String side) {
@@ -204,16 +223,19 @@ void feet_down(String side) {
 		digitalWrite(relay07, HIGH);
 		digitalWrite(relay04, LOW);
 		digitalWrite(relay08, LOW);
+		return;
 	}
 	else if (side == "right")
 	{
 		digitalWrite(relay03, HIGH);
 		digitalWrite(relay04, LOW);
+		return;
 	}
 	else
 	{
 		digitalWrite(relay07, HIGH);
 		digitalWrite(relay08, LOW);
+		return;
 	}
 }
 void feet_reset(String side, String part) {
@@ -240,6 +262,7 @@ void stop(String side, String part) {
 			digitalWrite(relay02, HIGH);
 			digitalWrite(relay05, HIGH);
 			digitalWrite(relay06, HIGH);
+			return;
 		}
 		else
 		{
@@ -247,6 +270,7 @@ void stop(String side, String part) {
 			digitalWrite(relay04, HIGH);
 			digitalWrite(relay07, HIGH);
 			digitalWrite(relay08, HIGH);
+			return;
 		}
 	}
 	else if (side == "right")
@@ -255,11 +279,13 @@ void stop(String side, String part) {
 		{
 			digitalWrite(relay01, HIGH);
 			digitalWrite(relay02, HIGH);
+			return;
 		}
 		else
 		{
 			digitalWrite(relay03, HIGH);
 			digitalWrite(relay04, HIGH);
+			return;
 		}
 	}
 	else if (side == "left")
@@ -268,11 +294,13 @@ void stop(String side, String part) {
 		{
 			digitalWrite(relay05, HIGH);
 			digitalWrite(relay06, HIGH);
+			return;
 		}
 		else
 		{
 			digitalWrite(relay07, HIGH);
 			digitalWrite(relay08, HIGH);
+			return;
 		}
 	}
 	else
@@ -291,11 +319,11 @@ void calibrate() {
 void timerEvent(String side, String part, int time) {
 	if (part=="head")
 	{
-		head_reset("booth", "head");
+		head_reset(side, part);
 	}
 	else if (part=="feet")
 	{
-		feet_reset("booth", "feet");
+		feet_reset(side, part);
 	}
 	Serial.println("[PRESET] TimerEvent");
 	Serial.print("[PRESET] Time: ");

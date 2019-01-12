@@ -29,15 +29,40 @@ void choose_booth(String header) {
 		}
 		else if (header.indexOf("/booth/head/time") >= 0)
 		{
-			//TODO
 			header.replace("/booth/head/time/", "");
 			eventTime = header.toInt();
+			if (side == "" || part == "")
+			{
+#ifdef DEBUG
+				Serial.println("[DECODE] Malformed Statement! Something is missing:");
+				Serial.print("side = ");
+				Serial.println(side);
+				Serial.print("part = ");
+				Serial.println(part);
+#endif // DEBUG
+				return;
+			}
 			timerEvent(side, part, eventTime);
+			event1 = "";
+			event2 = "";
 			return;
 		}
 #ifdef DEBUG
 		Serial.println("[DECODE] Acting now!");
 #endif // DEBUG
+		if (side == "" || part == "" || action == "")
+		{
+#ifdef DEBUG
+			Serial.println("[DECODE] Malformed Statement! Something is missing:");
+			Serial.print("side = ");
+			Serial.println(side);
+			Serial.print("part = ");
+			Serial.println(part);
+			Serial.print("action = ");
+			Serial.println(action);
+#endif // DEBUG
+			return;
+		}
 		gpio_act(side, part, action);
 	}
 	else
@@ -60,16 +85,41 @@ void choose_booth(String header) {
 			action = "reset";
 		}
 		else if (header.indexOf("/booth/feet/time") >= 0)
-		{
-			//TODO			
+		{		
 			header.replace("/booth/feet/time/", "");
 			eventTime = header.toInt();
+			if (side == "" || part == "")
+			{
+#ifdef DEBUG
+				Serial.println("[DECODE] Malformed Statement! Something is missing:");
+				Serial.print("side = ");
+				Serial.println(side);
+				Serial.print("part = ");
+				Serial.println(part);
+#endif // DEBUG
+				return;
+			}
 			timerEvent(side, part, eventTime);
+			event1 = "";
+			event2 = "";
 			return;
 		}
 #ifdef DEBUG
 		Serial.println("[DECODE] Acting now!");
 #endif // DEBUG
+		if (side == "" || part == "" || action == "")
+		{
+#ifdef DEBUG
+			Serial.println("[DECODE] Malformed Statement! Something is missing:");
+			Serial.print("side = ");
+			Serial.println(side);
+			Serial.print("part = ");
+			Serial.println(part);
+			Serial.print("action = ");
+			Serial.println(action);
+#endif // DEBUG
+			return;
+		}
 		gpio_act(side, part, action);
 	}
 }
@@ -96,15 +146,40 @@ void choose_left(String header) {
 		}
 		else if (header.indexOf("/left/head/time") >= 0)
 		{
-			//TODO
 			header.replace("/left/head/time/", "");
 			eventTime = header.toInt();
+			if (side == "" || part == "")
+			{
+#ifdef DEBUG
+				Serial.println("[DECODE] Malformed Statement! Something is missing:");
+				Serial.print("side = ");
+				Serial.println(side);
+				Serial.print("part = ");
+				Serial.println(part);
+#endif // DEBUG
+				return;
+			}
 			timerEvent(side, part, eventTime);
+			event1 = "";
+			event2 = "";
 			return;
 		}
 #ifdef DEBUG
 		Serial.println("[DECODE] Acting now!");
 #endif // DEBUG
+		if (side == "" || part == "" || action == "")
+		{
+#ifdef DEBUG
+			Serial.println("[DECODE] Malformed Statement! Something is missing:");
+			Serial.print("side = ");
+			Serial.println(side);
+			Serial.print("part = ");
+			Serial.println(part);
+			Serial.print("action = ");
+			Serial.println(action);
+#endif // DEBUG
+			return;
+		}
 		gpio_act(side, part, action);
 	}
 	else
@@ -128,16 +203,40 @@ void choose_left(String header) {
 		}
 		else if (header.indexOf("/left/feet/time") >= 0)
 		{
-			//TODO
 			header.replace("/left/feet/time/", "");
 			eventTime = header.toInt();
+			if (side == "" || part == "")
+			{
+#ifdef DEBUG
+				Serial.println("[DECODE] Malformed Statement! Something is missing:");
+				Serial.print("side = ");
+				Serial.println(side);
+				Serial.print("part = ");
+				Serial.println(part);
+#endif // DEBUG
+				return;
+			}
 			timerEvent(side, part, eventTime);
+			event1 = "";
+			event2 = "";
 			return;
 		}
 #ifdef DEBUG
 		Serial.println("[DECODE] Acting now!");
 #endif // DEBUG
-
+		if (side == "" || part == "" || action == "")
+		{
+#ifdef DEBUG
+			Serial.println("[DECODE] Malformed Statement! Something is missing:");
+			Serial.print("side = ");
+			Serial.println(side);
+			Serial.print("part = ");
+			Serial.println(part);
+			Serial.print("action = ");
+			Serial.println(action);
+#endif // DEBUG
+			return;
+		}
 		gpio_act(side, part, action);
 	}
 }
@@ -164,15 +263,40 @@ void choose_right(String header) {
 		}
 		else if (header.indexOf("/right/head/time") >= 0)
 		{
-			//TODO
 			header.replace("/right/head/time/", "");
 			eventTime = header.toInt();
+			if (side=="" || part=="")
+			{
+#ifdef DEBUG
+				Serial.println("[DECODE] Malformed Statement! Something is missing:");
+				Serial.print("side = ");
+				Serial.println(side);
+				Serial.print("part = ");
+				Serial.println(part);
+#endif // DEBUG
+				return;
+			}
 			timerEvent(side, part, eventTime);
+			event1 = "";
+			event2 = "";
 			return;
 		}
 #ifdef DEBUG
 		Serial.println("[DECODE] Acting now!");
 #endif // DEBUG
+		if (side == "" || part == "" || action == "")
+		{
+#ifdef DEBUG
+			Serial.println("[DECODE] Malformed Statement! Something is missing:");
+			Serial.print("side = ");
+			Serial.println(side);
+			Serial.print("part = ");
+			Serial.println(part);
+			Serial.print("action = ");
+			Serial.println(action);
+#endif // DEBUG
+			return;
+		}
 		gpio_act(side, part, action);
 	}
 	else
@@ -196,21 +320,53 @@ void choose_right(String header) {
 		}
 		else if (header.indexOf("/right/feet/time") >= 0)
 		{
-			//TODO
 			header.replace("/right/feet/time/", "");
 			eventTime = header.toInt();
+			if (side == "" || part == "")
+			{
+#ifdef DEBUG
+				Serial.println("[DECODE] Malformed Statement! Something is missing:");
+				Serial.print("side = ");
+				Serial.println(side);
+				Serial.print("part = ");
+				Serial.println(part);
+#endif // DEBUG
+				return;
+			}
 			timerEvent(side, part, eventTime);
+			event1 = "";
+			event2 = "";
 			return;
 		}
 #ifdef DEBUG
 		Serial.println("[DECODE] Acting now!");
 #endif // DEBUG
+		if (side == "" || part == "" || action == "")
+		{
+#ifdef DEBUG
+			Serial.println("[DECODE] Malformed Statement! Something is missing:");
+			Serial.print("side = ");
+			Serial.println(side);
+			Serial.print("part = ");
+			Serial.println(part);
+			Serial.print("action = ");
+			Serial.println(action);
+#endif // DEBUG
+			return;
+		}
 		gpio_act(side, part, action);
 	}
 }
 
 void collect_event(String header) {
-	header.replace("/preset", "");
+	if (header.indexOf("/preset") >= 0)
+	{
+		header.replace("/preset", "");
+	}
+	if (header.indexOf("/alarm") >= 0)
+	{
+		header.replace("/alarm", "");
+	}
 	if (event1=="")
 	{
 		Serial.print("[EVENT] Setting EVENT1 to: ");
@@ -225,7 +381,6 @@ void collect_event(String header) {
 		event2 = header;
 	}
 	handshake_complete = true;
-	return;
 }
 
 void process_event(String event1, String event2) {
@@ -246,7 +401,7 @@ void process_event(String event1, String event2) {
 	}
 	if (event2.indexOf("/booth") >= 0)
 	{
-		Serial.println("[EVENT] Processing EVENT1 to BOOTH");
+		Serial.println("[EVENT] Processing EVENT2 to BOOTH");
 		choose_booth(event2);
 	}
 	else if (event2.indexOf("/left") >= 0)
@@ -261,4 +416,13 @@ void process_event(String event1, String event2) {
 	}
 	event1 = "";
 	event2 = "";
+}
+
+void stop() {
+	disable_all();
+}
+
+void wake_routine(String event1, String event2) {
+	//TODO HANGUP fix this to avoid hangup when stuck too long in server.on function
+	process_event(event1, event2);
 }
