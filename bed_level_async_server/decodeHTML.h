@@ -31,7 +31,7 @@ void choose_booth(String header) {
 			//TODO
 			header.replace("/booth/head/time/", "");
 			eventTime = header.toInt();
-			timerEvent(side, part, eventTime);
+			timeEvent(side, part, eventTime);
 		}
 #ifdef DEBUG
 		Serial.println("Acting now!");

@@ -14,7 +14,7 @@
 #define relay08 33
 
 String side, part, action, event1 = "", event2 = "";
-void timerEvent(String side, String part, int time);
+void timeEvent(String side, String part, int time);
 void stop(String side, String part);
 void head_up(String side);
 void head_down(String side);
@@ -24,7 +24,9 @@ void head_reset(String side, String part);
 void feet_reset(String side, String part);
 
 void disable_all() {
+#ifdef DEBUG
 	Serial.println("[COMMON] Relay disable all");
+#endif // DEBUG
 	digitalWrite(relay01, HIGH);
 	digitalWrite(relay02, HIGH);
 	digitalWrite(relay03, HIGH);
@@ -36,7 +38,9 @@ void disable_all() {
 }
 
 void enable_all() {
+#ifdef DEBUG
 	Serial.println("[COMMON] Relay enable all");
+#endif // DEBUG
 	digitalWrite(relay01, LOW);
 	digitalWrite(relay02, LOW);
 	digitalWrite(relay03, LOW);
@@ -48,7 +52,9 @@ void enable_all() {
 }
 
 void relay_init() {
+#ifdef DEBUG
 	Serial.println("[INIT] Relay Initialization");
+#endif // DEBUG
 	// Initialize the output variables as outputs
 	pinMode(relay01, OUTPUT);
 	pinMode(relay02, OUTPUT);
@@ -66,12 +72,14 @@ void gpio_act(String side, String part, String action) {
 
 #ifdef DEBUG
 	Serial.println("[GPIO] Settings:");
-	Serial.print("[GPIO] -->side:");
+	Serial.println("------------------");
+	Serial.print("[GPIO] SIDE: ");
 	Serial.println(side);
-	Serial.print("[GPIO] -->part:");
+	Serial.print("[GPIO] PART: ");
 	Serial.println(part);
-	Serial.print("[GPIO] -->action:");
+	Serial.print("[GPIO] ACTION: ");
 	Serial.println(action);
+	Serial.println("------------------");
 #endif // DEBUG
 
 	if (action == "stop")
@@ -96,11 +104,13 @@ void gpio_act(String side, String part, String action) {
 		}
 		else
 		{
+#ifdef DEBUG
 			Serial.println("[GPIO] Malformed Statement! Something is wrong:");
-			Serial.print("side = ");
+			Serial.print("SIDE = ");
 			Serial.println(side);
-			Serial.print("part = ");
+			Serial.print("PART = ");
 			Serial.println(part);
+#endif // DEBUG
 			return;
 		}
 		side = "";
@@ -122,11 +132,13 @@ void gpio_act(String side, String part, String action) {
 		}
 		else
 		{
+#ifdef DEBUG
 			Serial.println("[GPIO] Malformed Statement! Something is wrong:");
-			Serial.print("side = ");
+			Serial.print("SIDE = ");
 			Serial.println(side);
-			Serial.print("part = ");
+			Serial.print("PART = ");
 			Serial.println(part);
+#endif // DEBUG
 			return;
 		}
 		side = "";
@@ -134,8 +146,10 @@ void gpio_act(String side, String part, String action) {
 	}
 }
 void head_up(String side) {
-	Serial.print("[GPIO] HEAD UP on side: ");
+#ifdef DEBUG
+	Serial.print("[GPIO] HEAD UP on SIDE: ");
 	Serial.println(side);
+#endif // DEBUG
 	if (side == "booth")
 	{
 		digitalWrite(relay02, HIGH);
@@ -158,8 +172,10 @@ void head_up(String side) {
 	}
 }
 void head_down(String side) {
-	Serial.print("[GPIO] HEAD DOWN on side: ");
+#ifdef DEBUG
+	Serial.print("[GPIO] HEAD DOWN on SIDE: ");
 	Serial.println(side);
+#endif // DEBUG
 	if (side == "booth")
 	{
 		digitalWrite(relay01, HIGH);
@@ -182,17 +198,22 @@ void head_down(String side) {
 	}
 }
 void head_reset(String side, String part) {
-	Serial.print("[GPIO] Resetting HEAD on side: ");
+	//TODO compare with feet_reset() might be deprecated
+#ifdef DEBUG
+	Serial.print("[GPIO] RESET HEAD on SIDE: ");
 	Serial.print(side);
-	Serial.print(" with part: ");
+	Serial.print(" with PART: ");
 	Serial.println(part);
+#endif // DEBUG
 	head_down(side);
 	delay(5000);
 	stop(side, part);
 }
 void feet_up(String side) {
-	Serial.print("[GPIO] FEET UP on side: ");
+#ifdef DEBUG
+	Serial.print("[GPIO] FEET UP on SIDE: ");
 	Serial.println(side);
+#endif // DEBUG
 	if (side == "booth")
 	{
 		digitalWrite(relay04, HIGH);
@@ -215,8 +236,10 @@ void feet_up(String side) {
 	}
 }
 void feet_down(String side) {
-	Serial.print("[GPIO] FEET DOWN on side: ");
+#ifdef DEBUG
+	Serial.print("[GPIO] FEET DOWN on SIDE: ");
 	Serial.println(side);
+#endif // DEBUG
 	if (side == "booth")
 	{
 		digitalWrite(relay03, HIGH);
@@ -239,21 +262,24 @@ void feet_down(String side) {
 	}
 }
 void feet_reset(String side, String part) {
-	Serial.print("[GPIO] Resetting FEET on side: ");
+#ifdef DEBUG
+	Serial.print("[GPIO] RESET FEET on SIDE: ");
 	Serial.print(side);
-	Serial.print(" with part: ");
+	Serial.print(" with PART: ");
 	Serial.println(part);
+#endif // DEBUG
 	feet_down(side);
 	delay(5000);
 	stop(side, part);
 }
 
 void stop(String side, String part) {
-	Serial.print("[GPIO] Stopping on side: ");
+#ifdef DEBUG
+	Serial.print("[GPIO] Stopping on SIDE: ");
 	Serial.print(side);
-	Serial.print(" with part: ");
+	Serial.print(" with PART: ");
 	Serial.println(part);
-
+#endif // DEBUG
 	if (side == "booth")
 	{
 		if (part == "head")
@@ -311,12 +337,14 @@ void stop(String side, String part) {
 
 
 void calibrate() {
+#ifdef DEBUG
 	Serial.println("[GPIO] Calibrating...");
+#endif // DEBUG
 	head_reset("booth", "head");
 	feet_reset("booth", "feet");
 }
 
-void timerEvent(String side, String part, int time) {
+void timeEvent(String side, String part, int time) {
 	if (part=="head")
 	{
 		head_reset(side, part);
@@ -325,8 +353,10 @@ void timerEvent(String side, String part, int time) {
 	{
 		feet_reset(side, part);
 	}
-	Serial.println("[PRESET] TimerEvent");
-	Serial.print("[PRESET] Time: ");
+#ifdef DEBUG
+	Serial.println("[PRESET] TimeEvent");
+	Serial.print("[PRESET] TIME: ");
+#endif // DEBUG
 	Serial.println(time);
 	gpio_act(side, part, "up");
 	delay(time);

@@ -33,32 +33,32 @@ void choose_booth(String header) {
 			eventTime = header.toInt();
 			if (side == "" || part == "")
 			{
-#ifdef DEBUG
+#ifdef HTTP_DEBUG
 				Serial.println("[DECODE] Malformed Statement! Something is missing:");
-				Serial.print("side = ");
+				Serial.print("SIDE = ");
 				Serial.println(side);
-				Serial.print("part = ");
+				Serial.print("PART = ");
 				Serial.println(part);
 #endif // DEBUG
 				return;
 			}
-			timerEvent(side, part, eventTime);
+			timeEvent(side, part, eventTime);
 			event1 = "";
 			event2 = "";
 			return;
 		}
-#ifdef DEBUG
+#ifdef HTTP_DEBUG
 		Serial.println("[DECODE] Acting now!");
 #endif // DEBUG
 		if (side == "" || part == "" || action == "")
 		{
-#ifdef DEBUG
+#ifdef HTTP_DEBUG
 			Serial.println("[DECODE] Malformed Statement! Something is missing:");
-			Serial.print("side = ");
+			Serial.print("SIDE = ");
 			Serial.println(side);
-			Serial.print("part = ");
+			Serial.print("PART = ");
 			Serial.println(part);
-			Serial.print("action = ");
+			Serial.print("ACTION = ");
 			Serial.println(action);
 #endif // DEBUG
 			return;
@@ -90,32 +90,32 @@ void choose_booth(String header) {
 			eventTime = header.toInt();
 			if (side == "" || part == "")
 			{
-#ifdef DEBUG
+#ifdef HTTP_DEBUG
 				Serial.println("[DECODE] Malformed Statement! Something is missing:");
-				Serial.print("side = ");
+				Serial.print("SIDE = ");
 				Serial.println(side);
-				Serial.print("part = ");
+				Serial.print("PART = ");
 				Serial.println(part);
 #endif // DEBUG
 				return;
 			}
-			timerEvent(side, part, eventTime);
+			timeEvent(side, part, eventTime);
 			event1 = "";
 			event2 = "";
 			return;
 		}
-#ifdef DEBUG
+#ifdef HTTP_DEBUG
 		Serial.println("[DECODE] Acting now!");
 #endif // DEBUG
 		if (side == "" || part == "" || action == "")
 		{
-#ifdef DEBUG
+#ifdef HTTP_DEBUG
 			Serial.println("[DECODE] Malformed Statement! Something is missing:");
-			Serial.print("side = ");
+			Serial.print("SIDE = ");
 			Serial.println(side);
-			Serial.print("part = ");
+			Serial.print("PART = ");
 			Serial.println(part);
-			Serial.print("action = ");
+			Serial.print("ACTION = ");
 			Serial.println(action);
 #endif // DEBUG
 			return;
@@ -150,32 +150,32 @@ void choose_left(String header) {
 			eventTime = header.toInt();
 			if (side == "" || part == "")
 			{
-#ifdef DEBUG
+#ifdef HTTP_DEBUG
 				Serial.println("[DECODE] Malformed Statement! Something is missing:");
-				Serial.print("side = ");
+				Serial.print("SIDE = ");
 				Serial.println(side);
-				Serial.print("part = ");
+				Serial.print("PART = ");
 				Serial.println(part);
 #endif // DEBUG
 				return;
 			}
-			timerEvent(side, part, eventTime);
+			timeEvent(side, part, eventTime);
 			event1 = "";
 			event2 = "";
 			return;
 		}
-#ifdef DEBUG
+#ifdef HTTP_DEBUG
 		Serial.println("[DECODE] Acting now!");
 #endif // DEBUG
 		if (side == "" || part == "" || action == "")
 		{
-#ifdef DEBUG
+#ifdef HTTP_DEBUG
 			Serial.println("[DECODE] Malformed Statement! Something is missing:");
-			Serial.print("side = ");
+			Serial.print("SIDE = ");
 			Serial.println(side);
-			Serial.print("part = ");
+			Serial.print("PART = ");
 			Serial.println(part);
-			Serial.print("action = ");
+			Serial.print("ACTION = ");
 			Serial.println(action);
 #endif // DEBUG
 			return;
@@ -207,32 +207,32 @@ void choose_left(String header) {
 			eventTime = header.toInt();
 			if (side == "" || part == "")
 			{
-#ifdef DEBUG
+#ifdef HTTP_DEBUG
 				Serial.println("[DECODE] Malformed Statement! Something is missing:");
-				Serial.print("side = ");
+				Serial.print("SIDE = ");
 				Serial.println(side);
-				Serial.print("part = ");
+				Serial.print("PART = ");
 				Serial.println(part);
 #endif // DEBUG
 				return;
 			}
-			timerEvent(side, part, eventTime);
+			timeEvent(side, part, eventTime);
 			event1 = "";
 			event2 = "";
 			return;
 		}
-#ifdef DEBUG
+#ifdef HTTP_DEBUG
 		Serial.println("[DECODE] Acting now!");
 #endif // DEBUG
 		if (side == "" || part == "" || action == "")
 		{
-#ifdef DEBUG
+#ifdef HTTP_DEBUG
 			Serial.println("[DECODE] Malformed Statement! Something is missing:");
-			Serial.print("side = ");
+			Serial.print("SIDE = ");
 			Serial.println(side);
-			Serial.print("part = ");
+			Serial.print("PART = ");
 			Serial.println(part);
-			Serial.print("action = ");
+			Serial.print("ACTION = ");
 			Serial.println(action);
 #endif // DEBUG
 			return;
@@ -267,32 +267,32 @@ void choose_right(String header) {
 			eventTime = header.toInt();
 			if (side=="" || part=="")
 			{
-#ifdef DEBUG
+#ifdef HTTP_DEBUG
 				Serial.println("[DECODE] Malformed Statement! Something is missing:");
-				Serial.print("side = ");
+				Serial.print("SIDE = ");
 				Serial.println(side);
-				Serial.print("part = ");
+				Serial.print("PART = ");
 				Serial.println(part);
 #endif // DEBUG
 				return;
 			}
-			timerEvent(side, part, eventTime);
+			timeEvent(side, part, eventTime);
 			event1 = "";
 			event2 = "";
 			return;
 		}
-#ifdef DEBUG
+#ifdef HTTP_DEBUG
 		Serial.println("[DECODE] Acting now!");
 #endif // DEBUG
 		if (side == "" || part == "" || action == "")
 		{
-#ifdef DEBUG
+#ifdef HTTP_DEBUG
 			Serial.println("[DECODE] Malformed Statement! Something is missing:");
-			Serial.print("side = ");
+			Serial.print("SIDE = ");
 			Serial.println(side);
-			Serial.print("part = ");
+			Serial.print("PART = ");
 			Serial.println(part);
-			Serial.print("action = ");
+			Serial.print("ACTION = ");
 			Serial.println(action);
 #endif // DEBUG
 			return;
@@ -324,32 +324,32 @@ void choose_right(String header) {
 			eventTime = header.toInt();
 			if (side == "" || part == "")
 			{
-#ifdef DEBUG
+#ifdef HTTP_DEBUG
 				Serial.println("[DECODE] Malformed Statement! Something is missing:");
-				Serial.print("side = ");
+				Serial.print("SIDE = ");
 				Serial.println(side);
-				Serial.print("part = ");
+				Serial.print("PART = ");
 				Serial.println(part);
 #endif // DEBUG
 				return;
 			}
-			timerEvent(side, part, eventTime);
+			timeEvent(side, part, eventTime);
 			event1 = "";
 			event2 = "";
 			return;
 		}
-#ifdef DEBUG
+#ifdef HTTP_DEBUG
 		Serial.println("[DECODE] Acting now!");
 #endif // DEBUG
 		if (side == "" || part == "" || action == "")
 		{
-#ifdef DEBUG
+#ifdef HTTP_DEBUG
 			Serial.println("[DECODE] Malformed Statement! Something is missing:");
-			Serial.print("side = ");
+			Serial.print("SIDE = ");
 			Serial.println(side);
-			Serial.print("part = ");
+			Serial.print("PART = ");
 			Serial.println(part);
-			Serial.print("action = ");
+			Serial.print("ACTION = ");
 			Serial.println(action);
 #endif // DEBUG
 			return;
@@ -369,15 +369,19 @@ void collect_event(String header) {
 	}
 	if (event1=="")
 	{
+#ifdef HTTP_DEBUG
 		Serial.print("[EVENT] Setting EVENT1 to: ");
 		Serial.println(header);
+#endif // HTTP_DEBUG
 		event1 = header;
 		return;
 	}
 	else
 	{
+#ifdef HTTP_DEBUG
 		Serial.print("[EVENT] Setting EVENT2 to: ");
 		Serial.println(header);
+#endif // HTTP_DEBUG
 		event2 = header;
 	}
 	handshake_complete = true;
@@ -386,32 +390,44 @@ void collect_event(String header) {
 void process_event(String event1, String event2) {
 	if (event1.indexOf("/booth") >= 0)
 	{
+#ifdef HTTP_DEBUG
 		Serial.println("[EVENT] Processing EVENT1 to BOOTH");
+#endif // HTTP_DEBUG
 		choose_booth(event1);
 	}
 	else if (event1.indexOf("/left") >= 0)
 	{
+#ifdef HTTP_DEBUG
 		Serial.println("[EVENT] Processing EVENT1 to LEFT");
+#endif // HTTP_DEBUG
 		choose_left(event1);
 	}
 	else if (event1.indexOf("/right") >= 0)
 	{
+#ifdef HTTP_DEBUG
 		Serial.println("[EVENT] Processing EVENT1 to RIGHT");
+#endif // HTTP_DEBUG
 		choose_right(event1);
 	}
 	if (event2.indexOf("/booth") >= 0)
 	{
+#ifdef HTTP_DEBUG
 		Serial.println("[EVENT] Processing EVENT2 to BOOTH");
+#endif // HTTP_DEBUG
 		choose_booth(event2);
 	}
 	else if (event2.indexOf("/left") >= 0)
 	{
+#ifdef HTTP_DEBUG
 		Serial.println("[EVENT] Processing EVENT2 to LEFT");
+#endif // HTTP_DEBUG
 		choose_left(event2);
 	}
 	else if (event2.indexOf("/right") >= 0)
 	{
+#ifdef HTTP_DEBUG
 		Serial.println("[EVENT] Processing EVENT2 to RIGHT");
+#endif // HTTP_DEBUG
 		choose_right(event2);
 	}
 	event1 = "";

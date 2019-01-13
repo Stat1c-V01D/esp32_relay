@@ -532,7 +532,7 @@ void stop(String side,String part) {
 	}
 }
 
-void timerEvent(String side, String part, int time) {
+void timeEvent(String side, String part, int time) {
 
 }
 

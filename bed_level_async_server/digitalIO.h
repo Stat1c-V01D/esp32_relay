@@ -13,7 +13,7 @@
 #define relay08 33
 
 String side, part, action;
-void timerEvent(String side, String part, int time);
+void timeEvent(String side, String part, int time);
 void stop(String side, String part);
 void head_up(String side);
 void head_down(String side);
@@ -257,7 +257,7 @@ void calibrate() {
 	feet_reset("booth", "feet");
 }
 
-void timerEvent(String side, String part, int time) {
+void timeEvent(String side, String part, int time) {
 	calibrate();
 	Serial.println("[PRESET] TimerEvent");
 	Serial.print("[PRESET] Time: ");
