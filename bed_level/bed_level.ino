@@ -3,7 +3,6 @@
  Created:	12.12.2018 14:15:48
  Author:	KS
 */
-#include <WiFi.h>
 #include <FS.h>
 #include <AsyncTCP.h>
 #include <ESPAsyncWebServer.h>
@@ -28,7 +27,7 @@ struct alexa_data
 	bool state;
 	unsigned char value;
 };
-alexa_data current_device = { "",false,0};
+alexa_data current_device = { "",false,0 };
 
 // the setup function runs once when you press reset or power the board
 void setup() {
@@ -42,7 +41,7 @@ void setup() {
 	// fauxmoESP 2.0.0 has changed the callback signature to add the device_id,
 	// this way it's easier to match devices to action without having to compare strings.
 	fauxmo.onSetState([](unsigned char device_id, const char * device_name, bool state, unsigned char value) {
-		Serial.printf("[FAUXMO] Device #%d (%s) state: %s value: %d\n", device_id, device_name, state ? "HOCH" : "RUNTER",value);
+		Serial.printf("[FAUXMO] Device #%d (%s) state: %s value: %d\n", device_id, device_name, state ? "HOCH" : "RUNTER", value);
 		alexa_event = true;
 		current_device.device_name = device_name;
 		current_device.state = state;
@@ -55,11 +54,11 @@ void loop() {
 	fauxmo.handle();
 	if (alexa_event)
 	{
-		alexa_handler(current_device.device_name,current_device.state,current_device.value);
+		alexa_handler(current_device.device_name, current_device.state, current_device.value);
 		alexa_event = false;
 		current_device.device_name = "";
 		current_device.state = false;
-		current_device.value =  0;
+		current_device.value = 0;
 	}
 	if (handshake_complete == true)
 	{
@@ -83,19 +82,20 @@ void connect_wifi() {
 #endif // DEBUG
 	WiFi.begin(WIFI_SSID, WIFI_PASS);
 	while (WiFi.status() != WL_CONNECTED) {
-		if (tries > 100)
+		if (tries > 1000)
 		{
 			enable_ap();
-			break;
+			return;
 		}
 		Serial.print(".");
 		delay(100);
 		tries++;
 	}
-	Serial.println();
+	Serial.println("");
 	// Connected!
 #ifdef DEBUG
 	Serial.printf("[WIFI] STATION Mode, SSID: %s, IP address: %s\n", WiFi.SSID().c_str(), WiFi.localIP().toString().c_str());
+	Serial.println("");
 #endif // DEBUG
 }
 
@@ -103,12 +103,13 @@ void enable_ap() {
 	Serial.println("[WIFI] Launching WiFi as Access Point");
 	WiFi.mode(WIFI_AP);
 #ifdef DEBUG
-	Serial.print("[WIFI] Setting AP (Access Point)…");
+	Serial.println("[WIFI] Setting AP (Access Point)");
 #endif // DEBUG
 	// Remove the password parameter, if you want the AP (Access Point) to be open
 	WiFi.softAP("ESP32-AP", "123456789");
 #ifdef DEBUG
 	Serial.printf("[WIFI] ACCESS POINT Mode, SSID: %s, IP address: %s\n", WiFi.SSID().c_str(), WiFi.softAPIP().toString().c_str());
+	Serial.println("");
 #endif // DEBUG
 	//TODO create Webpage to configure ESP
 }
