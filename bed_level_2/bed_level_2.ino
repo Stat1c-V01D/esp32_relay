@@ -1,17 +1,20 @@
 /*
- Name:		bed_level_wifi.ino
- Created:	12.12.2018 14:15:48
+ Name:		bed_level_2.ino
+ Created:	15.01.2019 11:08:31
  Author:	KS
 */
+
+#include <fauxmoESP.h>
 #include <FS.h>
 #include <AsyncTCP.h>
 #include <ESPAsyncWebServer.h>
 #include <Arduino.h>
 #include <WiFi.h>
-#include <fauxmoESP.h>
 #include "digitalIO.h"
 #include "decodeHTTP.h"
 #include "defines.h"
+#include "wifihandler.h"
+#include "alexahandler.h"
 
 #define WIFI_SSID "FRITZ-WLAN-2"
 #define WIFI_PASS "01823938742039394944"
@@ -19,6 +22,15 @@
 AsyncWebServer server(80);
 AsyncWebServerRequest *request;
 fauxmoESP fauxmo;
+
+bool new_event = false;
+struct event_data
+{
+	String side, part, action;
+	bool processed;
+};
+event_data curr_event{};
+event_data prev_event{};
 
 bool alexa_event = false;
 struct alexa_data
@@ -47,76 +59,6 @@ void setup() {
 		current_device.state = state;
 		current_device.value = value;
 	});
-}
-
-// the loop function runs over and over again until power down or reset
-void loop() {
-	fauxmo.handle();
-	if (alexa_event)
-	{
-		alexa_handler(current_device.device_name, current_device.state, current_device.value);
-		alexa_event = false;
-		current_device.device_name = "";
-		current_device.state = false;
-		current_device.value = 0;
-	}
-	if (handshake_complete == true)
-	{
-		process_event(event1, event2);
-		handshake_complete = false;
-	}
-#ifdef DEBUG
-	static unsigned long last = millis();
-	if (millis() - last > 5000) {
-		last = millis();
-		Serial.printf("[MAIN] Free heap: %d bytes\n", ESP.getFreeHeap());
-	}
-#endif // DEBUG
-}
-
-void connect_wifi() {
-	int tries = 0;
-	WiFi.mode(WIFI_STA);
-#ifdef DEBUG
-	Serial.printf("[WIFI] Connecting to %s ", WIFI_SSID);
-#endif // DEBUG
-	WiFi.begin(WIFI_SSID, WIFI_PASS);
-	while (WiFi.status() != WL_CONNECTED) {
-		if (tries > 200)
-		{
-			enable_ap();
-			return;
-		}
-#ifdef DEBUG
-		Serial.print(".");
-#endif // DEBUG
-		delay(100);
-		tries++;
-	}
-	// Connected!
-#ifdef DEBUG
-	Serial.println("");
-	Serial.printf("[WIFI] STATION Mode, SSID: %s, IP address: %s\n", WiFi.SSID().c_str(), WiFi.localIP().toString().c_str());
-	Serial.println("");
-#endif // DEBUG
-}
-
-void enable_ap() {
-#ifdef DEBUG
-	Serial.println("");
-	Serial.println("[WIFI] Launching WiFi as Access Point");
-#endif // DEBUG
-	WiFi.mode(WIFI_AP);
-#ifdef DEBUG
-	Serial.println("[WIFI] Setting AP (Access Point)");
-#endif // DEBUG
-	// Remove the password parameter, if you want the AP (Access Point) to be open
-	WiFi.softAP("ESP32-AP", "123456789");
-#ifdef DEBUG
-	Serial.printf("[WIFI] ACCESS POINT Mode, SSID: %s, IP address: %s\n", WiFi.SSID().c_str(), WiFi.softAPIP().toString().c_str());
-	Serial.println("");
-#endif // DEBUG
-	//TODO create Webpage to configure ESP
 }
 
 void server_setup() {
@@ -200,7 +142,7 @@ void server_setup() {
 		Serial.println("[HTTP] SEND response on ALARM!");
 #endif // HTTP_DEBUG
 		request->send(200, "text/plain", "ok");
-		//TODO form proper Funtion for handling wakeup sequence (reference HANGUP TODO)
+		//TODO form proper Function for handling wakeup sequence (reference HANGUP TODO)
 		/*
 		if (handshake_complete==true)
 		{
@@ -211,7 +153,6 @@ void server_setup() {
 	});
 	server.begin();
 }
-
 void fauxmo_setup() {
 	//TODO create setup for Fauxmo Device(s)
 	/*
@@ -238,82 +179,29 @@ void fauxmo_setup() {
 	fauxmo.enable(true);
 }
 
-void alexa_handler(const char * device_name, bool state, unsigned char value) {
-	if ((strcmp(device_name, HEAD) == 0)) {
-#ifdef FAUXMO_DEBUG
-		Serial.println("[FAUXMO] HEAD switched by Alexa");
-#endif // FAUXMO_DEBUG
-		if (state)
-		{
-			head_up("booth");
-			delay(value * 1000);
-			stop();
-		}
-		else
-		{
-			head_down("booth");
-			delay(value * 1000);
-			stop();
-		}
+// the loop function runs over and over again until power down or reset
+void loop() {
+	fauxmo.handle();
+	if (alexa_event)
+	{
+		alexa_handler(current_device.device_name, current_device.state, current_device.value);
+		alexa_event = false;
+		current_device.device_name = "";
+		current_device.state = false;
+		current_device.value = 0;
 	}
-	if ((strcmp(device_name, FEET) == 0)) {
-#ifdef FAUXMO_DEBUG
-		Serial.println("[FAUXMO] FEET switched by Alexa");
-#endif // FAUXMO_DEBUG
-		if (state)
-		{
-			feet_up("booth");
-			delay(value * 1000);
-			stop();
-		}
-		else
-		{
-			feet_down("booth");
-			delay(value * 1000);
-			stop();
-		}
+	if (handshake_complete == true)
+	{
+		//TODO alter code for compatibility with new event_data struct
+		process_event(event1, event2);
+		handshake_complete = false;
 	}
-	if ((strcmp(device_name, CALIBRATE) == 0)) {
-#ifdef FAUXMO_DEBUG
-		Serial.println("[FAUXMO] CALIBRATE switched by Alexa");
-#endif // FAUXMO_DEBUG
-		head_reset("booth", "head");
-		feet_reset("booth", "feet");
-	}
-
-	/*
-	if ((strcmp(device_name, LEFT_HEAD) == 0)) {
-		// this just sets a variable that the main loop() does something about
-		Serial.println("[FAUXMO] LEFT HEAD switched by Alexa");
-		//TODO action to be done when executed in all following Lamdas
-	}
-	if ((strcmp(device_name, RIGHT_HEAD) == 0)) {
-		// this just sets a variable that the main loop() does something about
-		Serial.println("[FAUXMO] RIGHT HEAD switched by Alexa");
-
-	}
-	if ((strcmp(device_name, LEFT_FEET) == 0)) {
-		// this just sets a variable that the main loop() does something about
-		Serial.println("[FAUXMO] LEFT FEET switched by Alexa");
-
-	}
-	if ((strcmp(device_name, RIGHT_FEET) == 0)) {
-		// this just sets a variable that the main loop() does something about
-		Serial.println("[FAUXMO] RIGHT FEET switched by Alexa");
-
-	}
-	if ((strcmp(device_name, CALIBRATE) == 0)) {
-		// this just sets a variable that the main loop() does something about
-		Serial.println("[FAUXMO] CALIBRATE switched by Alexa");
-
-	}
-	*/
-}
-
-void esp_restart() {
 #ifdef DEBUG
-	Serial.println("ESP going to restart in 1 second!");
+	static unsigned long last = millis();
+	if (millis() - last > 5000) {
+		last = millis();
+		Serial.printf("[MAIN] Free heap: %d bytes\n", ESP.getFreeHeap());
+	}
 #endif // DEBUG
-	delay(1000);
-	ESP.restart();
 }
+

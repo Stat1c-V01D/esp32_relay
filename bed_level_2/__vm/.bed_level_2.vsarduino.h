@@ -107,6 +107,6 @@ typedef long __PTRDIFF_TYPE__;
 #define interrupts() sei()
 #define noInterrupts() cli()
 
-#include "bed_level.ino"
+#include "bed_level_2.ino"
 #endif
 #endif
