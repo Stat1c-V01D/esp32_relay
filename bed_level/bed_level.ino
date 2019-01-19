@@ -13,12 +13,15 @@
 #include "decodeHTTP.h"
 #include "defines.h"
 
-#define WIFI_SSID "FRITZ-WLAN-2"
-#define WIFI_PASS "01823938742039394944"
+#define WIFI_SSID "Linksyshome"
+#define WIFI_PASS "Erika280531"
 
 AsyncWebServer server(80);
 AsyncWebServerRequest *request;
 fauxmoESP fauxmo;
+
+bool c_request = false;
+String capture ="",c_url="";
 
 bool alexa_event = false;
 struct alexa_data
@@ -60,10 +63,65 @@ void loop() {
 		current_device.state = false;
 		current_device.value = 0;
 	}
-	if (handshake_complete == true)
+	if (handshake_complete)
 	{
 		process_event(event1, event2);
 		handshake_complete = false;
+	}
+	if (c_request)
+	{
+#ifdef DEBUG
+		Serial.print("Captured URL: ");
+		Serial.println(c_url);
+		Serial.print("Capture Flag: ");
+		Serial.println(capture);
+#endif // DEBUG
+		if (capture=="booth")
+		{
+#ifdef DEBUG
+			Serial.println("Captured BOOTH");
+#endif // DEBUG
+			choose_booth(c_url);
+			purge_data();
+			return;
+		}
+		if (capture=="right")
+		{
+#ifdef DEBUG
+			Serial.println("Captured RIGHT");
+#endif // DEBUG
+			choose_right(c_url);
+			purge_data();
+			return;
+		}
+		if (capture=="left")
+		{
+#ifdef DEBUG
+			Serial.println("Captured LEFT");
+#endif // DEBUG
+			choose_left(c_url);
+			purge_data();
+			return;
+		}
+		if (capture=="calibrate")
+		{
+#ifdef DEBUG
+			Serial.println("Captured CALIBRATE");
+#endif // DEBUG
+			calibrate();
+			purge_data();
+			return;
+		}
+		if (capture=="resetall")
+		{
+#ifdef DEBUG
+			Serial.println("Captured RESETALL");
+#endif // DEBUG
+			reset_all();
+			purge_data();
+			return;
+		}
+
 	}
 #ifdef DEBUG
 	static unsigned long last = millis();
@@ -74,9 +132,16 @@ void loop() {
 #endif // DEBUG
 }
 
+void purge_data() {
+	c_request = false;
+	capture = "";
+	c_url = "";
+}
+
 void connect_wifi() {
 	int tries = 0;
 	WiFi.mode(WIFI_STA);
+	//WiFi.setHostname("ESP_BED");
 #ifdef DEBUG
 	Serial.printf("[WIFI] Connecting to %s ", WIFI_SSID);
 #endif // DEBUG
@@ -124,7 +189,10 @@ void server_setup() {
 #ifdef HTTP_DEBUG
 		Serial.println("[HTTP] GET request on BOOTH!");
 #endif // HTTP_DEBUG
-		choose_booth(request->url());
+		capture = "booth";
+		c_url = request->url();
+		c_request = true;
+		//choose_booth(request->url());
 #ifdef HTTP_DEBUG
 		Serial.println("[HTTP] SEND response on BOOTH!");
 #endif // HTTP_DEBUG
@@ -134,7 +202,10 @@ void server_setup() {
 #ifdef HTTP_DEBUG
 		Serial.println("[HTTP] GET request on RIGHT!");
 #endif // HTTP_DEBUG
-		choose_right(request->url());
+		capture = "right";
+		c_url = request->url();
+		c_request = true;
+		//choose_right(request->url());
 #ifdef HTTP_DEBUG
 		Serial.println("[HTTP] SEND response on RIGHT!");
 #endif // HTTP_DEBUG
@@ -144,7 +215,10 @@ void server_setup() {
 #ifdef HTTP_DEBUG
 		Serial.println("[HTTP] GET request on LEFT!");
 #endif // HTTP_DEBUG
-		choose_left(request->url());
+		capture = "left";
+		c_url = request->url();
+		c_request = true;
+		//choose_left(request->url());
 #ifdef HTTP_DEBUG
 		Serial.println("[HTTP] SEND response on LEFT!");
 #endif // HTTP_DEBUG
@@ -154,9 +228,25 @@ void server_setup() {
 #ifdef HTTP_DEBUG
 		Serial.println("[HTTP] GET request on CALIBRATE!");
 #endif // HTTP_DEBUG
-		calibrate();
+		capture = "calibrate";
+		c_url = request->url();
+		c_request = true;
+		//calibrate();
 #ifdef HTTP_DEBUG
 		Serial.println("[HTTP] SEND response on CALIBRATE!");
+#endif // HTTP_DEBUG
+		request->send(200, "text/plain", "ok");
+	});
+	server.on("/resetall", HTTP_ANY, [](AsyncWebServerRequest *request) {
+#ifdef HTTP_DEBUG
+		Serial.println("[HTTP] GET request on RESETALL!");
+#endif // HTTP_DEBUG
+		capture = "resetall";
+		c_url = request->url();
+		c_request = true;
+		//reset_all();
+#ifdef HTTP_DEBUG
+		Serial.println("[HTTP] SEND response on RESETALL!");
 #endif // HTTP_DEBUG
 		request->send(200, "text/plain", "ok");
 	});
@@ -189,7 +279,7 @@ void server_setup() {
 		Serial.println("[HTTP] SEND response on RESTART!");
 #endif // HTTP_DEBUG
 		request->send(200, "text/plain", "ok");
-		esp_restart();
+		esp_reboot();
 	});
 	server.on("/alarm", HTTP_ANY, [](AsyncWebServerRequest *request) {
 #ifdef HTTP_DEBUG
@@ -310,7 +400,7 @@ void alexa_handler(const char * device_name, bool state, unsigned char value) {
 	*/
 }
 
-void esp_restart() {
+void esp_reboot() {
 #ifdef DEBUG
 	Serial.println("ESP going to restart in 1 second!");
 #endif // DEBUG
