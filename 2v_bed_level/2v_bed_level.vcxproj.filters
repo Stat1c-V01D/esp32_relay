@@ -15,7 +15,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <None Include="bed_level_2.ino" />
+    <None Include="2v_bed_level.ino" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="decodeHTTP.h">
@@ -27,13 +27,7 @@
     <ClInclude Include="digitalIO.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="__vm\.bed_level_2.vsarduino.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="wifihandler.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="alexahandler.h">
+    <ClInclude Include="__vm\.2v_bed_level.vsarduino.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

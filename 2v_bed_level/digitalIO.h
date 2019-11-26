@@ -1,4 +1,5 @@
 #pragma once
+#include "config.h"
 #include "defines.h"
 
 // Assign output variables to GPIO pins
@@ -21,14 +22,6 @@ void feet_up(String side);
 void feet_down(String side);
 void head_reset(String side, String part);
 void feet_reset(String side, String part);
-
-void esp_restart() {
-#ifdef DEBUG
-	Serial.println("ESP going to restart in 1 second!");
-#endif // DEBUG
-	delay(1000);
-	ESP.restart();
-}
 
 void disable_all() {
 #ifdef DEBUG
@@ -213,7 +206,7 @@ void head_reset(String side, String part) {
 	Serial.println(part);
 #endif // DEBUG
 	head_down(side);
-	delay(5000);
+	delay(10000);
 	stop(side, part);
 }
 void feet_up(String side) {
@@ -276,8 +269,18 @@ void feet_reset(String side, String part) {
 	Serial.println(part);
 #endif // DEBUG
 	feet_down(side);
-	delay(5000);
+	delay(10000);
 	stop(side, part);
+}
+
+void reset_all() {
+#ifdef DEBUG
+	Serial.println("Resetting Function");
+#endif // DEBUG
+	head_down("booth");
+	feet_down("booth");
+	delay(10000);
+	disable_all();
 }
 
 void stop(String side, String part) {
@@ -347,11 +350,13 @@ void calibrate() {
 #ifdef DEBUG
 	Serial.println("[GPIO] Calibrating...");
 #endif // DEBUG
-	head_reset("booth", "head");
-	feet_reset("booth", "feet");
+	//head_reset("booth", "head");
+	//feet_reset("booth", "feet");
+	reset_all();
 }
 
 void timeEvent(String side, String part, int time) {
+	/*
 	if (part=="head")
 	{
 		head_reset(side, part);
@@ -360,6 +365,7 @@ void timeEvent(String side, String part, int time) {
 	{
 		feet_reset(side, part);
 	}
+	*/
 #ifdef DEBUG
 	Serial.println("[PRESET] TimeEvent");
 	Serial.print("[PRESET] TIME: ");

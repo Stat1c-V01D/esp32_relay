@@ -3,7 +3,7 @@
 #include "digitalIO.h"
 #include "defines.h"
 
-int eventTime;
+double eventTime;
 bool handshake_complete = false;
 
 void choose_booth(String header) {
@@ -30,7 +30,7 @@ void choose_booth(String header) {
 		else if (header.indexOf("/booth/head/time") >= 0)
 		{
 			header.replace("/booth/head/time/", "");
-			eventTime = header.toInt();
+			eventTime = header.toDouble();
 			if (side == "" || part == "")
 			{
 #ifdef HTTP_DEBUG

@@ -1,8 +1,10 @@
 /*
- Name:		bed_level_wifi.ino
- Created:	12.12.2018 14:15:48
- Author:	KS
+ Name:		_2v_bed_level.ino
+ Created:	13.02.2019 20:10:31
+ Author:	Kai
 */
+
+#include <dummy.h>
 #include <FS.h>
 #include <AsyncTCP.h>
 #include <ESPAsyncWebServer.h>
@@ -13,25 +15,29 @@
 #include "decodeHTTP.h"
 #include "defines.h"
 
-#define WIFI_SSID ""
-#define WIFI_PASS ""
+#define WIFI_SSID "Linksyshome"
+#define WIFI_PASS "Erika280531"
 
 AsyncWebServer server(80);
 AsyncWebServerRequest *request;
 fauxmoESP fauxmo;
 
 bool c_request = false;
-String capture ="",c_url="";
+struct request_data
+{
+	String capture = "", c_url = "";
+};
+request_data current_data = {};
+request_data previous_data = {};
 
 bool alexa_event = false;
 struct alexa_data
 {
 	const char * device_name;
 	bool state;
-	unsigned char value;
+	unsigned int value;
 };
 alexa_data current_device = { "",false,0 };
-
 // the setup function runs once when you press reset or power the board
 void setup() {
 #ifdef DEBUG
@@ -48,12 +54,16 @@ void setup() {
 		alexa_event = true;
 		current_device.device_name = device_name;
 		current_device.state = state;
-		current_device.value = value;
+		current_device.value = (value/2,55)*150;
 	});
 }
 
 // the loop function runs over and over again until power down or reset
 void loop() {
+	if (WiFi.status() != WL_CONNECTED)
+	{
+		connect_wifi();
+	}
 	fauxmo.handle();
 	if (alexa_event)
 	{
@@ -76,7 +86,12 @@ void loop() {
 		Serial.print("Capture Flag: ");
 		Serial.println(capture);
 #endif // DEBUG
-		if (capture=="booth")
+		switch (current_data.capture)//TODO
+		{
+		default:
+			break;
+		}
+		if (capture == "booth")
 		{
 #ifdef DEBUG
 			Serial.println("Captured BOOTH");
@@ -85,7 +100,7 @@ void loop() {
 			purge_data();
 			return;
 		}
-		if (capture=="right")
+		if (capture == "right")
 		{
 #ifdef DEBUG
 			Serial.println("Captured RIGHT");
@@ -94,7 +109,7 @@ void loop() {
 			purge_data();
 			return;
 		}
-		if (capture=="left")
+		if (capture == "left")
 		{
 #ifdef DEBUG
 			Serial.println("Captured LEFT");
@@ -103,7 +118,7 @@ void loop() {
 			purge_data();
 			return;
 		}
-		if (capture=="calibrate")
+		if (capture == "calibrate")
 		{
 #ifdef DEBUG
 			Serial.println("Captured CALIBRATE");
@@ -112,7 +127,7 @@ void loop() {
 			purge_data();
 			return;
 		}
-		if (capture=="resetall")
+		if (capture == "resetall")
 		{
 #ifdef DEBUG
 			Serial.println("Captured RESETALL");
@@ -123,6 +138,7 @@ void loop() {
 		}
 
 	}
+
 #ifdef DEBUG
 	static unsigned long last = millis();
 	if (millis() - last > 5000) {
