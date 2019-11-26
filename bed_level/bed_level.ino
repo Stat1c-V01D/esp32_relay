@@ -307,8 +307,8 @@ void fauxmo_setup() {
 	/*
 #define LEFT_HEAD "Bett links Kopf"
 #define RIGHT_HEAD "Bett rechts Kopf"
-#define LEFT_FEET "Bett links Fuﬂ"
-#define RIGHT_FEET "Bett rechts Fuﬂ"
+#define LEFT_FEET "Bett links Fu√ü"
+#define RIGHT_FEET "Bett rechts Fu√ü"
 #define CALIBRATE "Bett Kalibrieren"
 
 	fauxmo.addDevice(LEFT_HEAD);
@@ -319,7 +319,7 @@ void fauxmo_setup() {
 	fauxmo.enable(true);
 	*/
 #define HEAD "Bett Kopf"
-#define FEET "Bett Fuﬂ"
+#define FEET "Bett Fu√ü"
 #define CALIBRATE "Bett Kalibrieren"
 
 	fauxmo.addDevice(HEAD);
