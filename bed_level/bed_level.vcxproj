@@ -113,8 +113,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="decodeHTTP.h" />
-    <ClInclude Include="digitalIO.h" />
     <ClInclude Include="defines.h" />
+    <ClInclude Include="digitalIO.h" />
     <ClInclude Include="__vm\.bed_level.vsarduino.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

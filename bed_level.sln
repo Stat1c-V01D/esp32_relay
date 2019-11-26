@@ -19,6 +19,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "wifi_manager", "wifi_manage
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "2v_bed_level", "2v_bed_level\2v_bed_level.vcxproj", "{F9F23A30-90B1-42A7-BAC7-E500C29213EF}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "bed_level_espalexa", "bed_level_espalexa\bed_level_espalexa.vcxproj", "{AE1F98C7-04E7-419C-A865-AEDDD7BFD65C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x86 = Debug|x86
@@ -57,6 +59,10 @@ Global
 		{F9F23A30-90B1-42A7-BAC7-E500C29213EF}.Debug|x86.Build.0 = Debug|Win32
 		{F9F23A30-90B1-42A7-BAC7-E500C29213EF}.Release|x86.ActiveCfg = Release|Win32
 		{F9F23A30-90B1-42A7-BAC7-E500C29213EF}.Release|x86.Build.0 = Release|Win32
+		{AE1F98C7-04E7-419C-A865-AEDDD7BFD65C}.Debug|x86.ActiveCfg = Debug|Win32
+		{AE1F98C7-04E7-419C-A865-AEDDD7BFD65C}.Debug|x86.Build.0 = Debug|Win32
+		{AE1F98C7-04E7-419C-A865-AEDDD7BFD65C}.Release|x86.ActiveCfg = Release|Win32
+		{AE1F98C7-04E7-419C-A865-AEDDD7BFD65C}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

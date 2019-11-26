@@ -15,16 +15,16 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <None Include="bed_level.ino" />
+    <None Include="bed_level_espalexa.ino" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="__vm\.bed_level.vsarduino.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="defines.h">
+    <ClInclude Include="__vm\.bed_level_espalexa.vsarduino.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="decodeHTTP.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="defines.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="digitalIO.h">
